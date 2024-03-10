@@ -18,13 +18,13 @@ if __name__ == "__main__":
 
     byte_array = bytearray(bytes_to_send)
 
-    total_time = 0
+    start_time = 0
     for i in range(test_count):
         if is_synchronous:
-            time = mpi_ping_pong.sync_ping_pong(comm, rank, byte_array)
+            mpi_ping_pong.sync_ping_pong(comm, rank, byte_array)
         else:
-            time = mpi_ping_pong.standard_ping_pong(comm, rank, byte_array)
-        total_time += time
+            mpi_ping_pong.standard_ping_pong(comm, rank, byte_array)
+    total_time = MPI.Wtime() - start_time
 
     if rank == 0:
         result = total_time / test_count
