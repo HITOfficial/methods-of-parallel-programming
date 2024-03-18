@@ -303,7 +303,7 @@ def ares_serial_fraction_processes():
         plt.plot(df['proc'], p(df['proc']), color=color, linestyle='--', label='trend line')
 
     plt.xlabel('number of processes')
-    plt.ylabel('efficiency')
+    plt.ylabel('serial fraction')
     plt.title('Ares scaling serial fraction for [N] processes')
     plt.legend()
     plt.savefig("plots/ares_scaling_serial_fraction.png")
