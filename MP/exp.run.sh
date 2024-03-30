@@ -6,9 +6,9 @@ echo "experiment_type,threads,chunk_size,padding_time" > "output.csv"
 
 
 for schedule_type in 0 1 2; do
-    for chunk_size in 1 64 1024 2048; do
+    for chunk_size in 1 64 1024 2048 4096; do
         gcc -Wall rand.c -o rand -fopenmp -DCHUNKSIZE=$chunk_size -DPADDING=0
-        for threads in 1 2 4 8; do
+        for threads in 1 2 3 4 5 6 7 8; do
             case $schedule_type in
                             0) schedule_name="static" ;;
                             1) schedule_name="guided" ;;
