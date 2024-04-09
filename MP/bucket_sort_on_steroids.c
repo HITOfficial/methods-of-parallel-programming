@@ -11,39 +11,35 @@ int cmpfunc(const void *a, const void *b) {
 }
 
 int main(int argc, char *argv[]) {
-    if (argc != 4) {
-        printf("Usage: %s <number of threads> <schedule type> <chunk size>\n", argv[0]);
+    if (argc != 3) {
+        printf("Usage: %s <number of threads> <n> \n", argv[0]);
         return 1;
     }
+    double initial_time = omp_get_wtime();
 
-    int n = 17; // array size
-    int max = 10;
-    int schedule_type = atoi(argv[1]);
-    int chunk_size = atoi(argv[2]);
-    int nthreads = atoi(argv[3]);
+    int max = 1000000;
+
+    int nthreads = atoi(argv[1]);
+    int n = atoi(argv[2]);
 
     omp_set_num_threads(nthreads);
 
     int *tab = calloc(n, sizeof(int)); // Allocate memory for the array
-//    fill tab with random numbers,not 0
-
-    srand(10);
-
-    // Fill the array with random numbers between 1 and 9
-    for (int i = 0; i < n; i++) {
-        tab[i] = (rand() % max) + 1; // random number between 1 and 9
-    }
-
 
     double start = omp_get_wtime();
-
+    // Generate random numbers in parallel
+#pragma omp parallel
+    {
+        unsigned int seed = time(0) + omp_get_thread_num();
+#pragma omp for
+        for (int i = 0; i < n; i++) {
+            tab[i] = rand_r(&seed) % max;
+        }
+    }
 
     double end = omp_get_wtime();
-    double first_part = end - start;
-    for (int i = 0; i < n; i++) {
-        printf("%d\t", tab[i]);
-    }
-    printf("first part ended \n");
+
+    double generating_random_numbers = end - start;
 
     // Find min and max values in the array
     int max_value_in_tab = 0;
@@ -52,7 +48,6 @@ int main(int argc, char *argv[]) {
         if (tab[i] > max_value_in_tab) max_value_in_tab = tab[i];
         if (tab[i] < min_value_in_tab) min_value_in_tab = tab[i];
     }
-    printf("min: %d, max: %d\n", min_value_in_tab, max_value_in_tab);
 
     // Allocate memory for shared buckets and their lengths
     int *shared_bucket_length = calloc(nthreads, sizeof(int));
@@ -61,7 +56,8 @@ int main(int argc, char *argv[]) {
         shared_buckets[i] = calloc(n, sizeof(int));
     }
 
-    // Distribute elements into buckets
+    start = omp_get_wtime();
+// Distribute elements into buckets
 #pragma omp parallel
     {
         int thread_id = omp_get_thread_num();
@@ -80,17 +76,9 @@ int main(int argc, char *argv[]) {
             bucket_length[bucket_index]++;
         }
 
+        // Sort each private bucket
         for (int i = 0; i < nthreads; i++) {
             qsort(buckets[i], bucket_length[i], sizeof(int), cmpfunc);
-            // check if the buckets are sorted
-            if (bucket_length[i] == 0) {
-                continue;
-            }
-            printf("qsort 1\n");
-            for (int j = 0; j < bucket_length[i]; j++) {
-                printf(" %d\t", buckets[i][j]);
-                printf("\n");
-            }
         }
 
         // Merge buckets into shared_buckets
@@ -112,28 +100,24 @@ int main(int argc, char *argv[]) {
         free(buckets);
         free(bucket_length);
     }
+    end = omp_get_wtime();
+    double bucket_distribution_private_sort = end - start;
 
 
-
-
+    start = omp_get_wtime();
 // Sort shared buckets
 #pragma omp parallel
     {
         int i = omp_get_thread_num();
         qsort(shared_buckets[i], shared_bucket_length[i], sizeof(int), cmpfunc);
-        if (shared_bucket_length[i] > 0) {
-            printf("qsort 2\n");
-            for (int j = 0; j < shared_bucket_length[i]; j++) {
-                printf(" %d\t", shared_buckets[i][j]);
-                printf("\n");
-            }
-        }
     }
 
-//
-//
-//#pragma omp barrier
-//// Merge sorted buckets back into the original array
+    end = omp_get_wtime();
+    double shared_bucket_sort = end - start;
+
+
+    start = omp_get_wtime();
+//  Merge sorted buckets back into the original array
 #pragma omp parallel
     {
         int i = omp_get_thread_num();
@@ -141,25 +125,18 @@ int main(int argc, char *argv[]) {
         for (int j = 0; j < i; j++) {
             previous_buckets_length += shared_bucket_length[j];
         }
-        for(int j = 0; j < shared_bucket_length[i]; j++) {
+        for (int j = 0; j < shared_bucket_length[i]; j++) {
             int index = j + previous_buckets_length;
             tab[index] = shared_buckets[i][j];
         }
     }
+    end = omp_get_wtime();
+    double initial_table_merge_bucket = end - start;
 
-//
-//printf("ONOMATOPEJA\n");
-//
-printf("\n");
-for (int i = 0; i < n; i++) {
-    printf("%d\t", tab[i]);
-}
-//printf("first part:  %f\n", first_part);
-//printf("schedule type: %d\n", schedule_type);
-//
-//#pragma omp barrier
-//
-//// Cleanup
+    double total_runtime = end - initial_time;
+    printf("%d %d %f %f %f %f %f\n", nthreads, n, generating_random_numbers, bucket_distribution_private_sort,
+           shared_bucket_sort, initial_table_merge_bucket, total_runtime);
+
     for (int i = 0; i < nthreads; i++) {
         free(shared_buckets[i]);
     }
