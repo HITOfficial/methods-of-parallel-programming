@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
     }
     double initial_time = omp_get_wtime();
 
-    int max = 1000000;
+    int max = 10000000;
 
     int nthreads = atoi(argv[1]);
     int n = atoi(argv[2]);
