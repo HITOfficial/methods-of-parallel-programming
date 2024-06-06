@@ -1,0 +1,23 @@
+==5486== NVPROF is profiling process 5486, command: ./reduction_kernel_sequential_gpu
+Time= 2.576 msec, bandwidth= 26.047531 GB/s
+host: 0.996007, device 0.996007
+==5486== Profiling application: ./reduction_kernel_sequential_gpu
+==5486== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   53.35%  14.679ms         1  14.679ms  14.679ms  14.679ms  [CUDA memcpy HtoD]
+                   36.83%  10.133ms        16  633.29us  4.7360us  1.6762ms  reduction_kernel_2(float*, float*, unsigned int)
+                    9.81%  2.6988ms         5  539.76us  539.38us  540.27us  [CUDA memcpy DtoD]
+                    0.01%  2.0800us         1  2.0800us  2.0800us  2.0800us  [CUDA memcpy DtoH]
+      API calls:   81.44%  130.70ms         2  65.352ms  212.08us  130.49ms  cudaMalloc
+                    9.35%  14.999ms         7  2.1427ms  7.4530us  14.896ms  cudaMemcpy
+                    7.90%  12.683ms         1  12.683ms  12.683ms  12.683ms  cudaDeviceSynchronize
+                    0.87%  1.3894ms         2  694.68us  205.83us  1.1835ms  cudaFree
+                    0.27%  439.70us        16  27.481us  5.2210us  332.87us  cudaLaunchKernel
+                    0.14%  232.45us       114  2.0390us     187ns  81.727us  cuDeviceGetAttribute
+                    0.01%  19.416us         1  19.416us  19.416us  19.416us  cuDeviceGetName
+                    0.00%  6.9620us         1  6.9620us  6.9620us  6.9620us  cuDeviceTotalMem
+                    0.00%  5.4090us         1  5.4090us  5.4090us  5.4090us  cuDeviceGetPCIBusId
+                    0.00%  1.9890us         3     663ns     340ns  1.2500us  cuDeviceGetCount
+                    0.00%  1.1080us         2     554ns     205ns     903ns  cuDeviceGet
+                    0.00%     471ns         1     471ns     471ns     471ns  cuModuleGetLoadingMode
+                    0.00%     422ns         1     422ns     422ns     422ns  cuDeviceGetUuid

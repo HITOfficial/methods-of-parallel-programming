@@ -1,0 +1,25 @@
+==830== NVPROF is profiling process 830, command: ./reduction_wp_kernel
+Time= 0.817 msec, bandwidth= 82.183846 GB/s
+host: 0.996007, device 0.996007
+==830== Profiling application: ./reduction_wp_kernel
+==830== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   53.53%  54.024ms       100  540.24us  539.32us  540.92us  [CUDA memcpy DtoD]
+                   26.98%  27.228ms       202  134.79us  4.1280us  268.03us  reduction_kernel(float*, float*, unsigned int)
+                   19.48%  19.663ms         1  19.663ms  19.663ms  19.663ms  [CUDA memcpy HtoD]
+                    0.00%  2.1440us         1  2.1440us  2.1440us  2.1440us  [CUDA memcpy DtoH]
+      API calls:   53.77%  188.94ms         2  94.469ms  139.85us  188.80ms  cudaMalloc
+                   22.79%  80.089ms         1  80.089ms  80.089ms  80.089ms  cudaDeviceSynchronize
+                   16.57%  58.218ms       101  576.42us     454ns  58.167ms  cudaOccupancyMaxActiveBlocksPerMultiprocessorWithFlags
+                    5.82%  20.443ms       102  200.42us  4.3430us  19.844ms  cudaMemcpy
+                    0.75%  2.6429ms         2  1.3214ms  332.97us  2.3099ms  cudaFree
+                    0.24%  851.15us       202  4.2130us  3.1210us  31.815us  cudaLaunchKernel
+                    0.04%  135.25us       114  1.1860us     140ns  55.071us  cuDeviceGetAttribute
+                    0.01%  46.460us       101     460ns     362ns  4.5490us  cudaDeviceGetAttribute
+                    0.00%  12.755us         1  12.755us  12.755us  12.755us  cuDeviceGetName
+                    0.00%  5.6850us         1  5.6850us  5.6850us  5.6850us  cuDeviceGetPCIBusId
+                    0.00%  4.5980us         1  4.5980us  4.5980us  4.5980us  cuDeviceTotalMem
+                    0.00%  1.9470us         3     649ns     215ns  1.5090us  cuDeviceGetCount
+                    0.00%     899ns         2     449ns     178ns     721ns  cuDeviceGet
+                    0.00%     480ns         1     480ns     480ns     480ns  cuModuleGetLoadingMode
+                    0.00%     258ns         1     258ns     258ns     258ns  cuDeviceGetUuid

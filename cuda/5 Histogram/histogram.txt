@@ -1,0 +1,10 @@
+naive; array_size: 65536; bin_count: 0.219584,time: 0.219584
+naive; array_size: 65536; bin_count: 65536,time: 0.190240
+naive; array_size: 1048576; bin_count: 65536,time: 0.280832
+naive; array_size: 1048576; bin_count: 64,time: 0.264160
+simple; array_size: 65536; bin_count: 64,time: 0.222784
+simple; array_size: 65536; bin_count: 65536,time: 0.205568
+simple; array_size: 1048576; bin_count: 64,time: 0.309248
+simple; array_size: 1048576; bin_count: 65536,time: 0.233056
+
+
